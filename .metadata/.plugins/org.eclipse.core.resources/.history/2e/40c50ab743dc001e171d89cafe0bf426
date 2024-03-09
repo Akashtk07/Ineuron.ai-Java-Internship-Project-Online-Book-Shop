@@ -1,0 +1,51 @@
+package com.DAO;
+
+//Import necessary libraries
+import org.xhtmlrenderer.pdf.ITextRenderer;
+import java.io.FileOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class BillPDFGenerator {
+
+ public void generateBillPDF(int orderId, Connection connection) {
+     try {
+         // Retrieve order data from the database
+         String sql = "SELECT * FROM orders WHERE order_id = ?";
+         PreparedStatement statement = connection.prepareStatement(sql);
+         statement.setInt(1, orderId);
+         ResultSet resultSet = statement.executeQuery();
+
+         if (resultSet.next()) {
+             // Extract necessary data from the ResultSet
+             String customerName = resultSet.getString("customer_name");
+             String productName = resultSet.getString("product_name");
+             double totalPrice = resultSet.getDouble("total_price");
+
+             // Generate HTML content for the bill
+             String htmlContent = "<h1>Invoice</h1>"
+                     + "<p>Customer Name: " + customerName + "</p>"
+                     + "<p>Product Name: " + productName + "</p>"
+                     + "<p>Total Price: " + totalPrice + "</p>";
+
+             // Generate PDF from HTML content
+             ITextRenderer renderer = new ITextRenderer();
+             renderer.setDocumentFromString(htmlContent);
+             renderer.layout();
+             String filePath = "bill.pdf";
+             FileOutputStream outputStream = new FileOutputStream(filePath);
+             renderer.createPDF(outputStream);
+             outputStream.close();
+
+             System.out.println("PDF generated successfully.");
+         } else {
+             System.out.println("Order not found.");
+         }
+     } catch (SQLException | IOException | DocumentException e) {
+         e.printStackTrace();
+     }
+ }
+}
+

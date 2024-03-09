@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;EbookApp_ineuron_Internship_Project/src/main/java/com/DAO/BillPDFGenerator.java&apos;" deleteContents="false" description="Delete resource &apos;EbookApp_ineuron_Internship_Project/src/main/java/com/DAO/BillPDFGenerator.java&apos;" element1="/EbookApp_ineuron_Internship_Project/src/main/java/com/DAO/BillPDFGenerator.java" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1709794881787"/>
+</session>

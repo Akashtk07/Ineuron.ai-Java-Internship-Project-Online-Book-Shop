@@ -1,0 +1,64 @@
+package com.DAO;
+
+//Import necessary libraries
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+//import com.itextpdf.text.DocumentException;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class BillPDFGenerator {
+	private Connection conn;
+	public BillPDFGenerator(Connection conn)
+	{
+		super();
+		this.conn=conn;
+	}
+
+ public void generateBillPDF(int orderId) {
+     try {
+         // Retrieve order data from the database
+         String sql = "SELECT * FROM order WHERE order_id = ?";
+         PreparedStatement statement = conn.prepareStatement(sql);
+         statement.setInt(1, orderId);
+         ResultSet resultSet = statement.executeQuery();
+
+         if (resultSet.next()) {
+             // Extract necessary data from the ResultSet
+             String customerName = resultSet.getString("user_name");
+             String email = resultSet.getString("email");
+             String address = resultSet.getString("address");
+             double price = resultSet.getDouble("price");
+             double totalPrice
+
+             // Generate HTML content for the bill
+             String htmlContent = "<h1>Invoice</h1>"
+                     + "<p> Customer Name: " + customerName + "</p>"
+                     + "<p> Email : " + email + "</p>"
+                     +"<p> Address : "+address+"</P>"
+                     + "<p> Total Price: " + totalPrice + "</p>";
+
+             // Generate PDF from HTML content
+             ITextRenderer renderer = new ITextRenderer();
+             renderer.setDocumentFromString(htmlContent);
+             renderer.layout();
+             String filePath = "bill.pdf";
+             FileOutputStream outputStream = new FileOutputStream(filePath);
+             renderer.createPDF(outputStream);
+             outputStream.close();
+
+             System.out.println("PDF generated successfully.");
+         } else {
+             System.out.println("Order not found.");
+         }
+     } catch (SQLException | IOException | com.lowagie.text.DocumentException e) {
+         e.printStackTrace();
+     }
+ }
+}
+

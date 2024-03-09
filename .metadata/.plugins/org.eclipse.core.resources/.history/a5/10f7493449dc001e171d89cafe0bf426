@@ -1,0 +1,36 @@
+<%@page import="com.DAO.Book_OrderDAOimpl"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <%@ page import="java.sql.Connection, com.DAO.BillPDFGenerator" %>
+<%@ page import="com.DB.DBConnect" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+
+<%
+
+Book_OrderDAOimpl dao= new Book_OrderDAOimpl(DBConnect.getConn());
+
+    // Retrieve order ID from request parameter
+    int orderId = Integer.parseInt(request.getParameter(dao.getOrderId(userobj.email)));
+
+    // Get database connection
+    Connection connection = DBConnect.getConn();
+
+    // Generate bill PDF
+    BillPDFGenerator generator = new BillPDFGenerator(connection);
+    generator.generateBillPDF(orderId );
+%>
+
+<!-- Provide a link to download the generated bill PDF -->
+<a href="bill.pdf" download="bill.pdf">Download Bill PDF</a>
+
+
+</body>
+</html>
